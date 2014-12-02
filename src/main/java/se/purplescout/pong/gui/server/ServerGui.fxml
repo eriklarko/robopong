@@ -10,7 +10,7 @@
                                                         -fx-background-repeat: stretch;
                                                         -fx-background-position: center;">
         <content>
-            <se.purplescout.pong.gui.server.HighScore fx:id="highScore" alignment="CENTER" style="-fx-background-color: #4F3576;"/>
+            <se.purplescout.pong.gui.server.HighScore fx:id="highScore" alignment="CENTER" style="-fx-background-color: #CC00CC;"/>
         </content>
     </ScrollPane>
 </AnchorPane>
