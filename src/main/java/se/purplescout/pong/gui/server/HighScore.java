@@ -223,8 +223,8 @@ public class HighScore extends GridPane {
         return false;
     }
 
-    private void alignCellWidths(GridPane fightGrid) {
-        for (Node n: fightGrid.getChildren()) {
+    private void alignCellWidths(GridPane grid) {
+        for (Node n: grid.getChildren()) {
             if (n instanceof Control) {
                 Control control = (Control) n;
                 control.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
