@@ -60,7 +60,7 @@ public class ServerGuiController implements NewPaddleListener, FightRoundDoneLis
         } catch (Exception e) {
             e.printStackTrace();
 
-            //alert(Alert.AlertType.WARNING, "Warning", "Could not restore previous paddles, " + e.getMessage());
+            alert(Alert.AlertType.WARNING, "Warning", "Could not restore previous paddles, " + e.getMessage());
         }
 
         try {
@@ -68,16 +68,9 @@ public class ServerGuiController implements NewPaddleListener, FightRoundDoneLis
         } catch (IOException e) {
             e.printStackTrace();
 
-            //alert(Alert.AlertType.ERROR, "Fatal exception", "Unable to start listening for paddles, " + e.getMessage());
+            alert(Alert.AlertType.ERROR, "Fatal exception", "Unable to start listening for paddles, " + e.getMessage());
             System.exit(13);
         }
-
-//        newPaddle(NopPaddle.class);
-//        newPaddle(KoilPad.class);
-//        newPaddle(VetInte.class);
-//        newPaddle(ExceptionThrowerPaddle.class);
-//        newPaddle(VerySlowPaddle.class);
-//        newPaddle(KindaSlowPaddle.class);
     }
 
     private void addStoredPaddles() throws IOException, JDKNotFoundException {
@@ -177,53 +170,6 @@ public class ServerGuiController implements NewPaddleListener, FightRoundDoneLis
             } else {
                 System.out.println("Unable to ignore " + clazz);
             }
-        }
-    }
-
-    public static class ExceptionThrowerPaddle extends Paddle {
-
-        @Override
-        public void decideWhatToDoThisTick(GameRound context) {
-            throw new NullPointerException();
-        }
-
-        @Override
-        public String getTeamName() {
-            return "exc";
-        }
-    }
-
-    public static class VerySlowPaddle extends Paddle {
-
-        @Override
-        public void decideWhatToDoThisTick(GameRound context) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public String getTeamName() {
-            return "10s sleep";
-        }
-    }
-
-    public static class KindaSlowPaddle extends Paddle {
-
-        @Override
-        public void decideWhatToDoThisTick(GameRound context) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public String getTeamName() {
-            return "1s sleep";
         }
     }
 }
