@@ -1,9 +1,10 @@
-package se.purplescout.pong.codetransfer;
+package se.purplescout.pong.codetransfer.lan;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import se.purplescout.pong.codetransfer.NewPaddleListener;
 import se.purplescout.pong.compiler.DynaCompTest;
 import se.purplescout.pong.game.Paddle;
 

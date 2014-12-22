@@ -22,7 +22,7 @@ import se.purplescout.pong.game.Pong;
 import se.purplescout.pong.game.SomeoneScoredListener;
 import se.purplescout.pong.gui.client.menu.MenuController;
 import se.purplescout.pong.gui.client.paddle.PaddleController;
-import se.purplescout.pong.gui.util.ClientConnection;
+import se.purplescout.pong.codetransfer.lan.ClientConnection;
 import se.purplescout.pong.gui.util.StatusIndicator;
 import se.purplescout.pong.gui.util.ToDisplay;
 

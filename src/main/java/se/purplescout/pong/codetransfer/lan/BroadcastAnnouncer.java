@@ -1,4 +1,4 @@
-package se.purplescout.pong.server;
+package se.purplescout.pong.codetransfer.lan;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
