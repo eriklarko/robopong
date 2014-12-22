@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.gui.client.paddle.classselector.PaddleCache;
+import se.purplescout.pong.server.OnPaddleRemovedListener;
 import se.purplescout.pong.server.autofight.AutoFight;
 
 import java.util.*;
@@ -334,10 +335,5 @@ public class HighScore extends GridPane {
             }
             return scoreDiff;
         }
-    }
-
-    public static interface OnPaddleRemovedListener {
-
-        void paddleRemoved(Paddle paddle);
     }
 }
