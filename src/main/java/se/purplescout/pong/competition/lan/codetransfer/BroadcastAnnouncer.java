@@ -1,5 +1,8 @@
 package se.purplescout.pong.competition.lan.codetransfer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,6 +15,7 @@ import java.util.TimerTask;
 
 public class BroadcastAnnouncer implements AutoCloseable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(BroadcastAnnouncer.class);
     private Timer sendTimer;
 
     public BroadcastAnnouncer() {
@@ -33,7 +37,7 @@ public class BroadcastAnnouncer implements AutoCloseable {
             }
         }, 500, 500);
 
-        System.out.println("Making broadcast announcements...");
+        LOG.info("Making broadcast announcements...");
     }
 
     private void broadcast() {
@@ -79,7 +83,7 @@ public class BroadcastAnnouncer implements AutoCloseable {
                         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8888);
                         c.send(sendPacket);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.error("Unable to send broadcast message on network interface " + networkInterface.getDisplayName(), e);
                     }
 
                     log.append(" {" + broadcast.getHostAddress() + " on if: " + networkInterface.getDisplayName() + "}");
@@ -91,7 +95,7 @@ public class BroadcastAnnouncer implements AutoCloseable {
             //Close the port!
             c.close();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOG.warn("", ex);
         }
     }
 

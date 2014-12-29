@@ -49,7 +49,6 @@ public class FightMatrix extends GridPane {
     }
 
     private void addFight(int row, int col, AutoFight fight, Paddle rowPaddle, Paddle colPaddle) {
-        System.out.println(rowPaddle.getTeamName() + " vs " + colPaddle.getTeamName());
         Node node = getNodeFromFightState(fight, rowPaddle, colPaddle);
 
         this.add(node, col, row);

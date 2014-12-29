@@ -375,7 +375,6 @@ public class Pong implements Runnable {
         ball.movementVector().setY(ballMovement.getY());
 
         if (ball.movementVector().length() > AREA_WIDTH * 0.9) {
-            System.out.println("Ball is moving too fast");
             resetBall(BALL_START_X_DIRECTION.RANDOM);
         }
     }

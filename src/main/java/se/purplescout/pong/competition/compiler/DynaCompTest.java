@@ -39,7 +39,6 @@ public class DynaCompTest {
                 throw new InvalidSourceStringException("Package name not found");
             }
         } else {
-            System.out.println("Class name not found or extends and stuff.");
             throw new InvalidSourceStringException("Class name not found");
         }
         String fullName = packageName + "." + className;

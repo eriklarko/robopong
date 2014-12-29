@@ -1,6 +1,9 @@
 package se.purplescout.pong.competition.lan.util.filesystemlistener;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -8,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DirectoryWatcher implements Runnable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DirectoryWatcher.class);
 
     private final WatchService watcher;
     private final Path pathToWatch;
@@ -52,10 +57,10 @@ public class DirectoryWatcher implements Runnable {
         if (trace) {
             Path prev = keys.get(key);
             if (prev == null) {
-                System.out.format("register: %s\n", dir);
+                LOG.debug("register: %s\n", dir);
             } else {
                 if (!dir.equals(prev)) {
-                    System.out.format("update: %s -> %s\n", prev, dir);
+                    LOG.debug("update: %s -> %s\n", prev, dir);
                 }
             }
         }
@@ -113,7 +118,7 @@ public class DirectoryWatcher implements Runnable {
         try {
             watcher.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn("Unable to close wather", e);
         }
     }
 }

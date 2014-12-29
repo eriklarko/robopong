@@ -1,20 +1,18 @@
 package se.purplescout.pong.competition.lan.codetransfer;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
-import javax.swing.JOptionPane;
 
 public class ClientConnection {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ClientConnection.class);
     private String host;
     private ServerFoundListener serverFoundListener;
 
@@ -30,7 +28,7 @@ public class ClientConnection {
                 try {
                     startListeningForServer();
                 } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "CC: Could not find server.. " + ex.getMessage());
+                    LOG.warn("Could not find server", ex);
                 }
             }
         }, "Looking for PongServer").start();
@@ -51,7 +49,7 @@ public class ClientConnection {
 
             String content = new String(packet.getData()).trim();
             //Packet received
-            System.out.println("Broadcast packet received from: " + packet.getAddress().getHostAddress() + ": " + content);
+            LOG.info("Broadcast packet received from: " + packet.getAddress().getHostAddress() + ": " + content);
             host = packet.getAddress().getHostAddress();
 
             if (serverFoundListener != null) {
@@ -80,14 +78,14 @@ public class ClientConnection {
         }
 
         try {
-            System.out.println("Connecting to " + host);
+            LOG.info("Connecting to " + host);
             Socket socket = new Socket(host, 12345);
-            System.out.println("Connected to " + host + ". Writing data..");
+            LOG.info("Connected to " + host + ". Writing data..");
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(socket.getOutputStream());
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedOutputStream);
             outputStreamWriter.write(code);
             outputStreamWriter.flush();
-            System.out.println("Data written");
+            LOG.debug("Data written");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             StringBuilder out = new StringBuilder();
@@ -96,7 +94,7 @@ public class ClientConnection {
                 out.append(line + "\n");
             }
 
-            System.out.println(out);
+            LOG.debug(out.toString());
             reader.close();
             socket.close();
 

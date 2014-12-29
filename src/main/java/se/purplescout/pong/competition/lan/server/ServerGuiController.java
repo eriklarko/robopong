@@ -25,11 +25,7 @@ public class ServerGuiController extends AutoFightHandler {
 
         highScore.setOnPaddleRemovedListener(this);
 
-        try {
-            super.initialize();
-        } catch (NoLogDirectoryException e) {
-            e.printStackTrace();
-        }
+        super.initialize();
     }
 
     @Override

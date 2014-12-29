@@ -1,11 +1,14 @@
 package se.purplescout.pong.competition.headless;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.game.SomeoneScoredListener;
 import se.purplescout.pong.competition.headless.AutoFight.RESULT;
 
 class AutoFightWatcher extends Thread {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AutoFightWatcher.class);
     private final AutoFight fightToWatch;
 
     public AutoFightWatcher(AutoFight fightToWatch) {
@@ -36,13 +39,13 @@ class AutoFightWatcher extends Thread {
                     synchronized (fightToWatch.getCurrentThread()) {
                         SomeoneScoredListener.PLAYER currentlyDeciding = getCurrentlyDeciding();
                         if (currentlyDeciding == SomeoneScoredListener.PLAYER.LEFT) {
-                            System.out.println("Team " + getLeftPaddle().getTeamName() + " has been deciding for " + decisionTime + " ms. Making player LOOOSE.");
+                            LOG.info("Team " + getLeftPaddle().getTeamName() + " has been deciding for " + decisionTime + " ms. Making player LOOOSE.");
                             fightToWatch.setFightResult(RESULT.LEFT_PADDLE_TOOK_TOO_LONG);
                         } else if (currentlyDeciding == SomeoneScoredListener.PLAYER.RIGHT) {
-                            System.out.println("Team " + getRightPaddle().getTeamName() + " has been deciding for " + decisionTime + " ms. Making player LOOOSE.");
+                            LOG.info("Team " + getRightPaddle().getTeamName() + " has been deciding for " + decisionTime + " ms. Making player LOOOSE.");
                             fightToWatch.setFightResult(RESULT.RIGHT_PADDLE_TOOK_TOO_LONG);
                         } else {
-                            System.out.println("Now something is terribly wrong... No one is deciding, but the decision has been going on too long");
+                            LOG.error("Now something is terribly wrong... No one is deciding, but the decision has been going on too long");
                             fightToWatch.setFightResult(RESULT.UNKNOWN_ERROR);
                         }
 
@@ -53,7 +56,7 @@ class AutoFightWatcher extends Thread {
                 }
             }
         } catch (ThreadToWatchSeemsDead ex) {
-            System.out.println("Thread to watch seems dead...");
+            LOG.warn("Thread to watch seems dead...");
         }
     }
 

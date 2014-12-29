@@ -1,23 +1,24 @@
 package se.purplescout.pong.competition.headless;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.competition.compiler.JDKNotFoundException;
 import se.purplescout.pong.competition.compiler.PaddleCompiler;
-import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.competition.paddlecache.PaddleCache;
+import se.purplescout.pong.game.Paddle;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Optional;;
 import java.util.stream.Collectors;
 
 public abstract class AutoFightHandler implements NewPaddleListener, FightRoundDoneListener, OnPaddleRemovedListener {
 
     private static final File CODE_LOG_DIRECTORY = new File("paddles");
+    private static final Logger LOG = LoggerFactory.getLogger(AutoFightHandler.class);
 
     private final FightQueue fightQueue = new FightQueue(this);
     private final PaddleCompiler compiler = new PaddleCompiler();
@@ -26,23 +27,23 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
         return fightQueue;
     }
 
-    public void initialize() throws NoLogDirectoryException {
+    public void initialize() {
         if (!CODE_LOG_DIRECTORY.exists()) {
             if (!CODE_LOG_DIRECTORY.mkdirs()) {
-                throw new NoLogDirectoryException();
+                LOG.warn("No code log directory present. All paddles will be printed to the logs.");
             }
         }
 
         try {
             addStoredPaddles();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("Unable to add stored paddles", e);
         }
 
         try {
             enableReceivingPaddles();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Can't receive paddles. Exiting.", e);
             System.exit(13);
         }
     }
@@ -71,13 +72,13 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
     }
 
     private void addNewPaddle(Class<? extends Paddle> paddleClass) {
-        System.out.println("New paddle!");
+        LOG.info("New paddle!");
         try {
             Class<Paddle> clazz = (Class<Paddle>) paddleClass;
             PaddleCache.registerNewPaddle(clazz);
             fightQueue.addPaddle(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("Unable to add new paddle", e);
         }
     }
 
@@ -91,12 +92,13 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
             try {
                 bw.append(code);
             } catch(IOException ex1) {
-                System.out.println(code);
+                LOG.warn("Couldn't write code to file. The code will follow here", ex1);
+                LOG.warn(code);
             }
             bw.flush();
             bw.close();
         } catch (IOException ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            LOG.warn("Unable to log incoming code", ex);
         }
     }
 
@@ -107,8 +109,7 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
         try {
             markPaddleClassFileIgnored(paddle.getClass());
         } catch (IOException e) {
-            System.out.println("Unable to ignore paddle class file");
-            e.printStackTrace();
+            LOG.warn("Unable to ignore paddle class file", e);
         }
     }
 
@@ -126,7 +127,7 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
             if (newFileName.toFile().delete()) {
                 Files.move(file.get(), newFileName);
             } else {
-                System.out.println("Unable to ignore " + clazz);
+                LOG.warn("Unable to ignore " + clazz);
             }
         }
     }

@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.competition.paddlecache.GetTeamNameException;
 import se.purplescout.pong.competition.paddlecache.NewInstanceException;
 import se.purplescout.pong.competition.paddlecache.PaddleCache;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 public class ClassSelector extends ChoiceBox<Class<Paddle>> {
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ClassSelector.class);
     private final ObjectProperty<File> paddleClassFolder = new SimpleObjectProperty<>();
     private final ObjectProperty<File> jdkPath = new SimpleObjectProperty<>();
     private final ObjectProperty<Class<Paddle>> selectedPaddle = new SimpleObjectProperty<>();
@@ -194,13 +196,10 @@ public class ClassSelector extends ChoiceBox<Class<Paddle>> {
                         for (Map.Entry<Class<Paddle>, PathAndUpdatedStatus> entry : paddleToFile.entrySet()) {
                             if (PaddleCache.getTeamName(entry.getKey()).equals(oldTeamName)) {
                                 previousHash = entry.getValue().getHash();
-
-                                System.out.println("Removed " + oldTeamName + " from paddle to file mapping");
                                 paddleToFile.remove(entry.getKey());
                                 break;
                             }
                         }
-                        System.out.println(PaddleCache.getTeamName(paddle) + " came from " + file.toFile().getAbsolutePath());
                         paddleToFile.put(paddle, new PathAndUpdatedStatus(file, previousHash));
                     }
                 } catch (JDKNotFoundException ex) {
@@ -251,7 +250,7 @@ public class ClassSelector extends ChoiceBox<Class<Paddle>> {
     public Path whichFileCompiledTo(Class<Paddle> paddle) {
         PathAndUpdatedStatus toReturn = paddleToFile.get(paddle);
         if (toReturn == null) {
-            System.out.println("Did not find file that compiled to " + PaddleCache.getTeamName(paddle));
+            LOG.warn("Did not find file that compiled to " + PaddleCache.getTeamName(paddle));
             return null;
         } else {
             return toReturn.getPath();

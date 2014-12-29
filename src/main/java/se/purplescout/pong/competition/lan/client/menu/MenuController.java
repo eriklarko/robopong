@@ -12,6 +12,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.competition.lan.util.CustomControl;
 
 import java.io.*;
@@ -20,6 +22,7 @@ import se.purplescout.pong.competition.lan.client.ClientGuiController;
 
 public class MenuController extends MenuBar {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MenuController.class);
     private static final File propertiesFile = new File("settings.ini");
     public static final String PADDLE_SOURCES_DIRECTORY_PROPERTY_NAME = "PaddleSourcesDirectory";
     public static final String JDK_PATH_PROPERTY_NAME = "JdkPath";
@@ -52,8 +55,7 @@ public class MenuController extends MenuBar {
             try (FileWriter fw = new FileWriter(propertiesFile)) {
                 properties.store(fw, null);
             } catch (IOException e) {
-                System.err.println("Unable to persist settings");
-                e.printStackTrace();
+                LOG.warn("Unable to persist settings", e);
             }
         }
     };
@@ -74,10 +76,9 @@ public class MenuController extends MenuBar {
             properties.load(is);
         } catch (FileNotFoundException e) {
             // Ignore
-            System.out.println("Settings file not found");
+            LOG.info("Settings file not found, using defaults.");
         } catch (IOException e) {
-            System.err.println("Unable to open properties file");
-            e.printStackTrace();
+            LOG.warn("Unable to open properties file", e);
         }
     }
 

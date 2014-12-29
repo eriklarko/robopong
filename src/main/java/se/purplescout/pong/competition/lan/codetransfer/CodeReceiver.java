@@ -4,12 +4,15 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.competition.headless.NewPaddleListener;
 import se.purplescout.pong.competition.compiler.DynaCompTest;
 import se.purplescout.pong.game.Paddle;
 
 public class CodeReceiver {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CodeReceiver.class);
     private static final int PORT = 12345;
 
     private boolean run = true;
@@ -28,15 +31,14 @@ public class CodeReceiver {
             @Override
             public void run() {
                 try {
-                    System.out.println("Accepting connectiongs!!!");
+                    LOG.info("Accepting connections");
                     while (run) {
 
                         Socket client = serverSocket.accept();
                         new Thread(new Client(client)).start();
                     }
                 } catch (Exception e) {
-                    System.out.println("Code Receiver caught exception. Exiting");
-                    e.printStackTrace();
+                    LOG.error("Code Receiver caught exception. Exiting", e);
                 }
             }
         });
@@ -79,7 +81,7 @@ public class CodeReceiver {
                 Class<Paddle> p = (Class<Paddle>) DynaCompTest.compile(code.toString(), printWriter);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
                 if (p != null) {
-                    System.out.println("INCOMING NEW OBJECT: " + p);
+                    LOG.info("INCOMING NEW OBJECT: " + p);
                     outputStreamWriter.write("ALL OK!");
 
                     if (newPaddleListener != null) {
@@ -96,11 +98,12 @@ public class CodeReceiver {
                 ex.printStackTrace(printWriter);
                 printWriter.flush();
                 printWriter.close();
-                ex.printStackTrace();
+                LOG.warn("Unable to compile and add paddle", ex);
             } finally {
                 try {
                     socket.close();
                 } catch (IOException ex) {
+                    LOG.warn("Unable to close socket", ex);
                 }
             }
         }

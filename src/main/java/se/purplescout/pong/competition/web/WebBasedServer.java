@@ -25,11 +25,7 @@ public class WebBasedServer extends AutoFightHandler {
     private final AtomicReference<SortedMap<String, Integer>> lastResults;
 
     public static void main(String[] args) {
-        try {
-            new WebBasedServer().initialize();
-        } catch (NoLogDirectoryException e) {
-            e.printStackTrace();
-        }
+        new WebBasedServer().initialize();
     }
 
     public WebBasedServer() {

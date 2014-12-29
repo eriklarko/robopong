@@ -1,5 +1,7 @@
 package se.purplescout.pong.competition.headless;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.competition.paddlecache.PaddleCache;
 
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class FightQueue {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FightQueue.class);
     private final FightRoundDoneListener fightRoundDoneListener;
     private final Map<String, Class<Paddle>> paddles = new HashMap<>();
     private final BlockingDeque<Set<Class<Paddle>>> queuedFightRounds = new LinkedBlockingDeque<>();
@@ -31,8 +34,7 @@ public class FightQueue {
                 try {
                     startFightRound(queuedFightRounds.takeFirst());
                 } catch (InterruptedException e) {
-                    System.out.println("Fight round consumer was interrupted! No moar fajts will häppen");
-                    e.printStackTrace();
+                    LOG.warn("Fight round consumer was interrupted! No moar fajts will häppen", e);
                 }
             }
         }
@@ -45,7 +47,7 @@ public class FightQueue {
     public synchronized void addPaddle(Class<Paddle> paddleClass) {
         String teamName = PaddleCache.getTeamName(paddleClass);
         if (teamName == null) {
-            System.out.println("Tried to add unregistered paddle to fight: " + paddleClass);
+            LOG.warn("Tried to add unregistered paddle to fight: " + paddleClass);
             return;
         }
 
@@ -67,7 +69,7 @@ public class FightQueue {
     public synchronized void removePaddle(Class<? extends Paddle> paddleClass) {
         String teamName = PaddleCache.getTeamName(paddleClass);
         if (teamName == null) {
-            System.out.println("Tried to remove unregistered paddle from fight: " + paddleClass);
+            LOG.warn("Tried to remove unregistered paddle from fight: " + paddleClass);
             return;
         }
 
@@ -78,7 +80,7 @@ public class FightQueue {
     }
 
     private void startFightRound(Set<Class<Paddle>> paddlesToFight) {
-        System.out.println("========= Starting fight round with " + paddlesToFight.size() + " paddles =========");
+        LOG.info("========= Starting fight round with " + paddlesToFight.size() + " paddles =========");
         roundIsRunning.set(true);
         List<AutoFight> fights = getFightPairs(paddlesToFight).stream().map(this::makeFightFromPair)
                 .filter((a) -> a.isPresent())
@@ -93,14 +95,13 @@ public class FightQueue {
 
             if (!allDone) {
                 // TODO: Hantera !allDone
-                System.out.println("A fight round timed out!");
+                LOG.info("A fight round timed out!");
             } else if (allDone && fightRoundDoneListener != null) {
                 fightRoundDoneListener.fightRoundDone(fights);
-                System.out.println("========= FIGHT ROUND DONE =========");
+                LOG.info("========= FIGHT ROUND DONE =========");
             }
         } catch (InterruptedException e) {
-            System.out.println("Some fight round was interrupted");
-            e.printStackTrace();
+            LOG.warn("Some fight round was interrupted", e);
         } finally {
             roundIsRunning.set(false);
         }
@@ -122,7 +123,7 @@ public class FightQueue {
         Paddle left = PaddleCache.getInstance(pair.a);
         Paddle right = PaddleCache.getInstance(pair.b);
         if (left == null || right == null) {
-            System.out.println("Some fight pair contained nulls :/");
+            LOG.warn("Some fight pair contained nulls :/");
             return Optional.empty();
         }
         return Optional.of(new AutoFight(left, right));

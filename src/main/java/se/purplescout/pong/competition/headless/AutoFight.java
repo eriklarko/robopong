@@ -1,5 +1,7 @@
 package se.purplescout.pong.competition.headless;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.game.Pong;
 import se.purplescout.pong.game.SomeoneScoredListener;
@@ -25,6 +27,7 @@ public class AutoFight implements Runnable, Callable<AutoFight> {
         SUCCESS
     }
 
+    private static final Logger LOG = LoggerFactory.getLogger(AutoFight.class);
     private final Pong pong;
     private final AutoFightWatcher watcher = new AutoFightWatcher(this);
     private int leftScore, rightScore;
@@ -76,11 +79,11 @@ public class AutoFight implements Runnable, Callable<AutoFight> {
 
     void setFightResult(RESULT result) {
         if (this.result != RESULT.UNDETERMINED) {
-            System.out.println(Thread.currentThread().getName() + " - ALREADY HAD RESULT: " + this.result);
+            LOG.debug(Thread.currentThread().getName() + " - ALREADY HAD RESULT: " + this.result);
             return;
         }
 
-        System.out.println(Thread.currentThread().getName() + " - Results are in: " + result);
+        LOG.debug(Thread.currentThread().getName() + " - Results are in: " + result);
 
         this.result = result;
         switch (result) {
@@ -138,7 +141,7 @@ public class AutoFight implements Runnable, Callable<AutoFight> {
                     setFightResult(RESULT.RIGHT_PADDLE_THREW_EXCEPTION);
                 } else {
                     setFightResult(RESULT.UNKNOWN_ERROR);
-                    ex.printStackTrace();
+                    LOG.error("Autofight threw exception but no one was deciding at the time, no one is penalized", ex);
                 }
 
                 break;

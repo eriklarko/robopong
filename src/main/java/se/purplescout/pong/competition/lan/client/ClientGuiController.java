@@ -16,6 +16,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import org.controlsfx.control.HiddenSidesPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.purplescout.pong.competition.compiler.JDKNotFoundException;
 import se.purplescout.pong.competition.compiler.PaddleCompiler;
 import se.purplescout.pong.competition.lan.client.menu.MenuController;
@@ -40,6 +42,8 @@ import java.util.Collections;
 import java.util.Objects;
 
 public class ClientGuiController implements SomeoneScoredListener, StatusIndicator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ClientGuiController.class);
 
     @FXML
     private HiddenSidesPane hiddenSidesPane;
@@ -137,7 +141,7 @@ public class ClientGuiController implements SomeoneScoredListener, StatusIndicat
             makeSureThereIsAValidJdk();
         } catch (Exception e) {
             setStatus(null, "Unable to test for the presence of a JDK. " + e.getMessage());
-            e.printStackTrace();
+            LOG.warn("Unable to test for the presence of a JDK", e);
         }
     }
 
@@ -163,7 +167,7 @@ public class ClientGuiController implements SomeoneScoredListener, StatusIndicat
         try {
             fs = FileSystems.newFileSystem(fileURI, Collections.<String, Object>emptyMap());
         } catch (FileSystemAlreadyExistsException e) {
-            System.out.println("File system already existed");
+            LOG.debug("File system already existed");
             fs = FileSystems.getFileSystem(fileURI);
         }
         return fs.getPath(entryName);
@@ -190,14 +194,14 @@ public class ClientGuiController implements SomeoneScoredListener, StatusIndicat
         leftPaddleControls.selectedPaddleProperty().addListener(new ChangeListener<Class<Paddle>>() {
             @Override
             public void changed(ObservableValue<? extends Class<Paddle>> observable, Class<Paddle> oldValue, Class<Paddle> newValue) {
-                System.out.println("Left paddle changed to " + newValue);
+                LOG.debug("Left paddle changed to " + newValue);
                 startNewPongGame();
             }
         });
         rightPaddleControls.selectedPaddleProperty().addListener(new ChangeListener<Class<Paddle>>() {
             @Override
             public void changed(ObservableValue<? extends Class<Paddle>> observable, Class<Paddle> oldValue, Class<Paddle> newValue) {
-                System.out.println("Right paddle changed to " + newValue);
+                LOG.debug("Right paddle changed to " + newValue);
                 startNewPongGame();
             }
         });
@@ -211,7 +215,7 @@ public class ClientGuiController implements SomeoneScoredListener, StatusIndicat
     }
 
     private void startNewPongGame() {
-        System.out.println("NEW PONG");
+        LOG.debug("NEW PONG");
         Class<Paddle> leftPaddle = leftPaddleControls.selectedPaddleProperty().get();
         Class<Paddle> rightPaddle = rightPaddleControls.selectedPaddleProperty().get();
 
