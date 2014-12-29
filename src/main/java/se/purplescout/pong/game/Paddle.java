@@ -1,7 +1,7 @@
 package se.purplescout.pong.game;
 
-import se.purplescout.pong.collision.Rectangle;
-import se.purplescout.pong.collision.Vector;
+import se.purplescout.pong.game.collision.Rectangle;
+import se.purplescout.pong.game.collision.Vector;
 
 public abstract class Paddle extends Movable {
 

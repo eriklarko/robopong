@@ -1,0 +1,16 @@
+package se.purplescout.pong.competition.lan.gui.client;
+
+import se.purplescout.pong.game.GameRound;
+import se.purplescout.pong.game.Paddle;
+
+public class JdkTestPaddle extends Paddle {
+    @Override
+    public void decideWhatToDoThisTick(GameRound context) {
+
+    }
+
+    @Override
+    public String getTeamName() {
+        return "JdkTest";
+    }
+}

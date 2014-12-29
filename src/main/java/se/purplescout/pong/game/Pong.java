@@ -1,8 +1,7 @@
 package se.purplescout.pong.game;
 
-import se.purplescout.pong.collision.*;
+import se.purplescout.pong.game.collision.*;
 
-import java.awt.Point;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -20,8 +20,8 @@ jar {
         }
     }
     manifest {
-        attributes 'Main-Class': 'se.purplescout.pong.gui.client.ClientMain'
-        //attributes 'Main-Class': 'se.purplescout.pong.gui.server.ServerMain'
+        attributes 'Main-Class': 'ClientMain'
+        //attributes 'Main-Class': 'ServerMain'
     }
 }
 

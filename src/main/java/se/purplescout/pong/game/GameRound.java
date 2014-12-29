@@ -1,10 +1,8 @@
 package se.purplescout.pong.game;
 
-import se.purplescout.pong.collision.Rectangle;
-import se.purplescout.pong.collision.Size;
-import se.purplescout.pong.collision.Vector;
-
-import java.awt.Point;
+import se.purplescout.pong.game.collision.Rectangle;
+import se.purplescout.pong.game.collision.Size;
+import se.purplescout.pong.game.collision.Vector;
 
 public final class GameRound {
 
