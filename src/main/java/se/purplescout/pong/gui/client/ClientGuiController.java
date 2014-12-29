@@ -17,6 +17,7 @@ import javafx.scene.layout.*;
 import javafx.util.Duration;
 import org.controlsfx.control.HiddenSidesPane;
 import se.purplescout.pong.compiler.JDKNotFoundException;
+import se.purplescout.pong.compiler.PaddleCompiler;
 import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.game.Pong;
 import se.purplescout.pong.game.SomeoneScoredListener;
@@ -74,6 +75,7 @@ public class ClientGuiController implements SomeoneScoredListener, StatusIndicat
     private final ObjectProperty<File> javaFilesFolder = new SimpleObjectProperty<>();
 
     private final ClientConnection clientConnection = new ClientConnection();
+    private final PaddleCompiler compiler = new PaddleCompiler();
 
     public ClientGuiController() {
         ClientMain.mainStatusIndicator = this;
@@ -131,7 +133,7 @@ public class ClientGuiController implements SomeoneScoredListener, StatusIndicat
             }
 
             Path pathToTestPaddle = resourceToPath(resource);
-            ClassSelector.compile(pathToTestPaddle, jdkFolder.get());
+            compiler.compile(pathToTestPaddle, jdkFolder.get());
         } catch (JDKNotFoundException e) {
             menu.setJdkPath();
             makeSureThereIsAValidJdk();

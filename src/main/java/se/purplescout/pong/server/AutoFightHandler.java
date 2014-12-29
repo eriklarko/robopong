@@ -1,10 +1,8 @@
 package se.purplescout.pong.server;
 
-import javafx.scene.control.Alert;
 import se.purplescout.pong.codetransfer.NewPaddleListener;
-import se.purplescout.pong.codetransfer.lan.BroadcastAnnouncer;
-import se.purplescout.pong.codetransfer.lan.CodeReceiver;
 import se.purplescout.pong.compiler.JDKNotFoundException;
+import se.purplescout.pong.compiler.PaddleCompiler;
 import se.purplescout.pong.game.Paddle;
 import se.purplescout.pong.gui.client.paddle.classselector.ClassSelector;
 import se.purplescout.pong.gui.client.paddle.classselector.PaddleCache;
@@ -26,6 +24,7 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
     private static final File CODE_LOG_DIRECTORY = new File("paddles");
 
     private final FightQueue fightQueue = new FightQueue(this);
+    private final PaddleCompiler compiler = new PaddleCompiler();
 
     public AutoFightHandler() {
         if (!CODE_LOG_DIRECTORY.exists()) {
@@ -35,26 +34,26 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
         }
     }
 
-    protected abstract void enableReceivingPaddles() throws IOException;
+    protected final FightQueue getFightQueue() {
+        return fightQueue;
+    }
 
     public void initialize() {
         try {
             addStoredPaddles();
         } catch (Exception e) {
             e.printStackTrace();
-
-            alert(Alert.AlertType.WARNING, "Warning", "Could not restore previous paddles, " + e.getMessage());
         }
 
         try {
             enableReceivingPaddles();
         } catch (IOException e) {
             e.printStackTrace();
-
-            alert(Alert.AlertType.ERROR, "Fatal exception", "Unable to start listening for paddles, " + e.getMessage());
             System.exit(13);
         }
     }
+
+    protected abstract void enableReceivingPaddles() throws IOException;
 
     private void addStoredPaddles() throws IOException, JDKNotFoundException {
         List<Path> files = Files.walk(CODE_LOG_DIRECTORY.toPath())
@@ -67,7 +66,7 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
     }
 
     private void compileAndAddPaddle(Path p) throws JDKNotFoundException {
-        Class<Paddle> clazz = ClassSelector.compile(p, null);
+        Class<Paddle> clazz = compiler.compile(p, null);
         addNewPaddle(clazz);
     }
 
@@ -85,11 +84,8 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
             fightQueue.addPaddle(clazz);
         } catch (Exception e) {
             e.printStackTrace();
-            alert(Alert.AlertType.WARNING, "", "Unable to register new paddle, " + e.getMessage());
         }
     }
-
-    protected abstract void alert(Alert.AlertType type, String title, String body);
 
     private void logCode(String code, Class<? extends Paddle> clazz) {
         if (!CODE_LOG_DIRECTORY.canWrite()) {

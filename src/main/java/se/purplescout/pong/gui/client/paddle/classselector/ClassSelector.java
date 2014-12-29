@@ -1,29 +1,30 @@
 package se.purplescout.pong.gui.client.paddle.classselector;
 
 import javafx.application.Platform;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
-import se.purplescout.pong.compiler.DynaCompTest;
-import se.purplescout.pong.compiler.InvalidSourceStringException;
 import se.purplescout.pong.compiler.JDKNotFoundException;
+import se.purplescout.pong.compiler.PaddleCompiler;
 import se.purplescout.pong.game.Paddle;
-import se.purplescout.pong.gui.util.*;
+import se.purplescout.pong.gui.util.StatusIndicator;
+import se.purplescout.pong.gui.util.ToDisplay;
 import se.purplescout.pong.gui.util.filesystemlistener.AbstractDirectoryChangeListener;
 import se.purplescout.pong.gui.util.filesystemlistener.DirectoryChangeListener;
 import se.purplescout.pong.gui.util.filesystemlistener.DirectoryWatcher;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import se.purplescout.pong.gui.client.paddle.PaddleController;
 
 public class ClassSelector extends ChoiceBox<Class<Paddle>> {
 
@@ -31,6 +32,7 @@ public class ClassSelector extends ChoiceBox<Class<Paddle>> {
     private final ObjectProperty<File> jdkPath = new SimpleObjectProperty<>();
     private final ObjectProperty<Class<Paddle>> selectedPaddle = new SimpleObjectProperty<>();
     private final Map<Class<Paddle>, PathAndUpdatedStatus> paddleToFile = new HashMap<>();
+    private final PaddleCompiler compiler = new PaddleCompiler();
     private StatusIndicator statusIndicator;
     private DirectoryWatcher directoryWatcher;
     private final DirectoryChangeListener directoryChangeListener = new AbstractDirectoryChangeListener() {
@@ -178,7 +180,7 @@ public class ClassSelector extends ChoiceBox<Class<Paddle>> {
             Collection<Class<Paddle>> paddles = new LinkedList<>();
             for (Path file : files) {
                 try {
-                    Class<Paddle> paddle = compile(file, jdkPath.get());
+                    Class<Paddle> paddle = compiler.compile(file, jdkPath.get());
                     if (paddle != null) {
                         String oldTeamName = PaddleCache.getTeamName(paddle);
                         PaddleCache.registerNewPaddle(paddle);
@@ -239,57 +241,6 @@ public class ClassSelector extends ChoiceBox<Class<Paddle>> {
         } catch (IOException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
             throw new ToDisplay("Unable to locate classes in the selected folder: " + ex.getMessage() + ".\nPlease try different folder, it is probably named 'src'.");
-        }
-    }
-
-    public static Class<Paddle> compile(Path p, File jdkPath) throws JDKNotFoundException {
-        String previousJavaHome = System.getProperty("java.home");
-        try {
-            if (jdkPath != null) {
-                System.setProperty("java.home", jdkPath.getAbsolutePath());
-                //System.out.println("Java home set to " + System.getProperty("java.home"));
-            }
-            String code = getFileAsString(p);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintWriter errorStream = new PrintWriter(baos);
-            Class<?> clazz = DynaCompTest.compile(code.toString(), errorStream);
-            String errors = new String(baos.toByteArray());
-            if (!errors.trim().isEmpty()) {
-                throw new ToDisplay("Unable to compile " + p + ".\n\n" + errors);
-            }
-
-            if (clazz == null) {
-                throw new ToDisplay("Got null instance when compiling " + p + ". This is weird and unexpected.");
-            }
-            try {
-                return (Class<Paddle>) clazz;
-            } catch (ClassCastException ex) {
-                throw new ToDisplay(p + " does not seem to be a paddle..");
-            }
-        } catch (InvalidSourceStringException ex) {
-            Logger.getLogger(PaddleController.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ToDisplay("There was something wrong with the source code in " + p + ". " + ex.getMessage(), ex);
-        } catch (InstantiationException ex) {
-            Logger.getLogger(PaddleController.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ToDisplay("Could not instantiate object. Do you have an empty constructor? " + ex + "\n\n" + ex.getMessage(), ex);
-        } catch (ClassNotFoundException | IllegalAccessException ex) {
-            Logger.getLogger(PaddleController.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ToDisplay("Failed compilation " + p + ". " + ex + "\n\n" + ex.getMessage(), ex);
-        } catch (UnableToReadSourceCodeFileException ex) {
-            Logger.getLogger(PaddleController.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ToDisplay("Unable to read source code file " + p, ex);
-        } finally {
-            System.setProperty("java.home", previousJavaHome);
-            //System.out.println("Java home reset to " + System.getProperty("java.home"));
-        }
-    }
-
-    private static String getFileAsString(Path p) throws UnableToReadSourceCodeFileException {
-        try {
-            return String.join("\n", Files.readAllLines(p));
-        } catch (IOException ex) {
-            throw new UnableToReadSourceCodeFileException(p, ex);
         }
     }
 

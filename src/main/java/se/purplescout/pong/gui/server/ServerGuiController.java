@@ -2,9 +2,7 @@ package se.purplescout.pong.gui.server;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
-import javafx.stage.StageStyle;
 import se.purplescout.pong.codetransfer.lan.BroadcastAnnouncer;
 import se.purplescout.pong.codetransfer.lan.CodeReceiver;
 import se.purplescout.pong.server.AutoFightHandler;
@@ -32,15 +30,6 @@ public class ServerGuiController extends AutoFightHandler {
     protected void enableReceivingPaddles() throws IOException {
         new CodeReceiver(this).startServer();
         new BroadcastAnnouncer().start();
-    }
-
-    @Override
-    protected void alert(Alert.AlertType type, String title, String body) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setContentText(body);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.showAndWait();
     }
 
     @Override

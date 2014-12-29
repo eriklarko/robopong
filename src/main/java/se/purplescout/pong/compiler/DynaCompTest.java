@@ -11,7 +11,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DynaCompTest {
+class DynaCompTest {
 
     public static final String CLASS_NAME_PATTERN = "class\\s+([\\wåäöÅÄÖ]+)\\s+extends";
 

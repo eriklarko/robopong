@@ -4,7 +4,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import java.net.URI;
 
-public class CharSequenceJavaFileObject extends SimpleJavaFileObject {
+class CharSequenceJavaFileObject extends SimpleJavaFileObject {
 
     /**
      * CharSequence representing the source code to be compiled

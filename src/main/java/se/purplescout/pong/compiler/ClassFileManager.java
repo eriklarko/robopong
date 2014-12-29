@@ -7,7 +7,7 @@ import javax.tools.StandardJavaFileManager;
 import java.io.IOException;
 import java.security.SecureClassLoader;
 
-public class ClassFileManager extends ForwardingJavaFileManager {
+class ClassFileManager extends ForwardingJavaFileManager {
     /**
      * Instance of JavaClassObject that will store the
      * compiled bytecode of our class
