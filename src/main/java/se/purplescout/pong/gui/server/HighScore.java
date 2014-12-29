@@ -52,7 +52,7 @@ public class HighScore extends GridPane {
         this.getChildren().add(noFightsMessage);
     }
 
-    private SortedMap<Paddle, Integer> calculateAndSortScoresForEachPaddle(Iterable<AutoFight> fights) {
+    public static SortedMap<Paddle, Integer> calculateAndSortScoresForEachPaddle(Iterable<AutoFight> fights) {
         Map<Paddle, Integer> unsortedScores = new HashMap<>();
         for (AutoFight fight : fights) {
             Integer leftScore = unsortedScores.get(fight.getLeftPaddle());

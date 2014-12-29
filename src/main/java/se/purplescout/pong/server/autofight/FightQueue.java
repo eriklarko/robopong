@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class FightQueue {
@@ -15,6 +16,7 @@ public class FightQueue {
     private final FightRoundDoneListener fightRoundDoneListener;
     private final Map<String, Class<Paddle>> paddles = new HashMap<>();
     private final BlockingDeque<Set<Class<Paddle>>> queuedFightRounds = new LinkedBlockingDeque<>();
+    private final AtomicBoolean roundIsRunning = new AtomicBoolean(false);
     private final Thread fightRoundConsumer = new Thread(new Runnable() {
 
         private volatile boolean stop;
@@ -77,6 +79,7 @@ public class FightQueue {
 
     private void startFightRound(Set<Class<Paddle>> paddlesToFight) {
         System.out.println("========= Starting fight round with " + paddlesToFight.size() + " paddles =========");
+        roundIsRunning.set(true);
         List<AutoFight> fights = getFightPairs(paddlesToFight).stream().map(this::makeFightFromPair)
                 .filter((a) -> a.isPresent())
                 .map((a) -> a.get())
@@ -98,6 +101,8 @@ public class FightQueue {
         } catch (InterruptedException e) {
             System.out.println("Some fight round was interrupted");
             e.printStackTrace();
+        } finally {
+            roundIsRunning.set(false);
         }
     }
 
@@ -121,5 +126,13 @@ public class FightQueue {
             return Optional.empty();
         }
         return Optional.of(new AutoFight(left, right));
+    }
+
+    public synchronized int getNumberOfQueuedRounds() {
+        return queuedFightRounds.size();
+    }
+
+    public boolean roundIsPlayingOut() {
+        return roundIsRunning.get();
     }
 }
