@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<?import se.purplescout.pong.competition.server.HighScore?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="se.purplescout.pong.competition.server.ServerGuiController">
+    <ScrollPane fx:id="highScoreScroll" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" style="-fx-background-image: url('se/purplescout/pong/competition/server/background-image.png');
+                                                        -fx-background-repeat: stretch;
+                                                        -fx-background-position: center;">
+        <content>
+            <se.purplescout.pong.competition.server.HighScore fx:id="highScore" alignment="CENTER" style="-fx-background-color: #CC00CC;"/>
+        </content>
+    </ScrollPane>
+</AnchorPane>

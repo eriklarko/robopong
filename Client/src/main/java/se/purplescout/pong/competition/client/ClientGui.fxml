@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.HiddenSidesPane?>
+<?import org.controlsfx.control.SegmentedButton?>
+<?import se.purplescout.pong.competition.client.menu.MenuController?>
+<?import se.purplescout.pong.competition.client.paddle.PaddleController?>
+<?import se.purplescout.pong.competition.client.PongCanvas?>
+<?import se.purplescout.pong.competition.client.workhistory.WorkList?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.purplescout.pong.competition.client.ClientGuiController" style="-fx-background-image: url('se/purplescout/pong/competition/client/background-image.png');
+    -fx-background-repeat: stretch;
+    -fx-background-position: center;">
+    <org.controlsfx.control.HiddenSidesPane fx:id="hiddenSidesPane" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <content>
+            <VBox>
+                <children>
+                    <MenuController fx:id="menu" />
+                    <BorderPane fx:id="centerPane">
+                        <top>
+                            <HBox alignment="CENTER"  style="-fx-padding: 4mm 0 2mm 0" >
+                                <org.controlsfx.control.SegmentedButton>
+                                    <buttons>
+                                        <ToggleButton text="Slow"   onAction="#slowSimulationSpeed"/>
+                                        <ToggleButton text="Normal" onAction="#normalSimulationSpeed" selected="true" />
+                                        <ToggleButton text="Fast"   onAction="#fastSimulationSpeed"/>
+                                    </buttons>
+                                </org.controlsfx.control.SegmentedButton>
+                            </HBox>
+                        </top>
+                        <center>
+                            <HBox alignment="CENTER" spacing="10">
+                                <BorderPane BorderPane.alignment="CENTER">
+                                    <top>
+                                        <PaddleController fx:id="leftPaddleControls" />
+                                    </top>
+                                    <center>
+                                        <Label fx:id="leftPaddleScoreLabel" textFill="WHITE" BorderPane.alignment="CENTER" alignment="CENTER_RIGHT" minWidth="195" prefHeight="50"
+                                               style="-fx-border-color: white;
+                                                      -fx-border-style: solid;
+                                                      -fx-border-radius: 5mm;
+                                                      -fx-border-width: 1mm;
+                                                      -fx-background-color: black;
+                                                      -fx-background-radius: 6mm;
+                                                      -fx-padding: 1mm;">
+                                            <font>
+                                                <Font size="96.0" />
+                                            </font>
+                                        </Label>
+                                    </center>
+                                </BorderPane>
+                                <PongCanvas fx:id="gameCanvas"/>
+                                <BorderPane>
+                                    <top>
+                                        <PaddleController fx:id="rightPaddleControls" />
+                                    </top>
+                                    <center>
+                                        <Label fx:id="rightPaddleScoreLabel" textFill="WHITE" BorderPane.alignment="CENTER"  alignment="CENTER_RIGHT" minWidth="195" prefHeight="50"
+                                               style="-fx-border-color: white;
+                                                      -fx-border-style: solid;
+                                                      -fx-border-radius: 5mm;
+                                                      -fx-border-width: 1mm;
+                                                      -fx-background-color: black;
+                                                      -fx-background-radius: 6mm;
+                                                      -fx-text-fill: white;
+                                                      -fx-padding: 1mm;">
+                                            <font>
+                                                <Font size="96.0"/>
+                                            </font>
+                                        </Label>
+                                    </center>
+                                </BorderPane>
+                            </HBox>
+                        </center>
+                    </BorderPane>
+                    <Pane fx:id="spaceStealer" visible="false" prefHeight="10"/>
+                    <HBox style="-fx-padding: 1mm 0 1mm 0; -fx-background-color: #4F3576;">
+                        <ProgressIndicator fx:id="workIndicator" prefHeight="30.0" prefWidth="30.0" visible="false" BorderPane.alignment="CENTER">
+                            <padding>
+                                <Insets right="5.0" />
+                            </padding>
+                        </ProgressIndicator>
+
+                        <Label fx:id="statusLabel" text="" textFill="WHITE" BorderPane.alignment="CENTER_LEFT">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </children>
+            </VBox>
+        </content>
+        <bottom>
+            <ScrollPane fx:id="workListScroll" minHeight="300" prefHeight="300">
+                <content>
+                    <se.purplescout.pong.competition.client.workhistory.WorkList fx:id="workList" maxWidth="Infinity" style="-fx-background-color: white;
+                    -fx-padding: 2mm;
+                    -fx-border-color: black;
+                    -fx-border-insets: 0;
+                    -fx-border-width: 0.1mm;
+                    -fx-border-style: solid"/>
+                </content>
+            </ScrollPane>
+        </bottom>
+    </org.controlsfx.control.HiddenSidesPane>
+</AnchorPane>

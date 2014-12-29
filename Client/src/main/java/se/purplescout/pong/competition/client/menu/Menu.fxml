@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<fx:root type="javafx.scene.control.MenuBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+    <menus>
+        <Menu mnemonicParsing="true" text="File">
+            <items>
+                <MenuItem mnemonicParsing="true" text="Exit" onAction="#exit"/>
+            </items>
+        </Menu>
+
+        <Menu mnemonicParsing="true" text="Game">
+            <items>
+                <MenuItem fx:id="pauseResume" mnemonicParsing="true" text="Pause/Resume" onAction="#pauseResume"/>
+                <MenuItem fx:id="restart" mnemonicParsing="true" text="Restart" onAction="#restart"/>
+            </items>
+        </Menu>
+
+        <Menu mnemonicParsing="true" text="Settings">
+            <items>
+                <MenuItem mnemonicParsing="true" text="Set paddle code path" onAction="#setPathToSourceFiles"/>
+                <MenuItem mnemonicParsing="true" text="Specify JDK path" onAction="#setJdkPath"/>
+                <MenuItem fx:id="forceRefreshPaddleClasses" mnemonicParsing="true" text="Force refresh paddle classes" onAction="#forceRefresh"/>
+            </items>
+        </Menu>
+    </menus>
+</fx:root>
