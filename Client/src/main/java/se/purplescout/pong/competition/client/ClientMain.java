@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import se.purplescout.pong.competition.client.util.StatusIndicator;
 import se.purplescout.pong.competition.client.util.StatusIndicatorExceptionHandler;
+import se.purplescout.pong.competition.security.PongPolicy;
+
+import java.security.Policy;
 
 public class ClientMain extends Application {
 
@@ -16,6 +19,9 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Policy.setPolicy(new PongPolicy());
+        System.setSecurityManager(new SecurityManager());
+
         Thread.setDefaultUncaughtExceptionHandler(new StatusIndicatorExceptionHandler());
 
         Parent root = FXMLLoader.load(getClass().getResource("ClientGui.fxml"));

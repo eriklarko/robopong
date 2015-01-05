@@ -14,7 +14,6 @@ public class PaddleCache {
     private static final ExecutorService executor = new ScheduledThreadPoolExecutor(1);
 
     public static void registerNewPaddle(Class<Paddle> clazz) throws NewInstanceException, GetTeamNameException, RegisterTimeoutException, IOException {
-        // TODO: Test
         if (!instances.containsKey(clazz)) {
             instances.put(clazz, createNewInstance(clazz));
         }
@@ -23,19 +22,8 @@ public class PaddleCache {
     private static Paddle createNewInstance(Class<Paddle> clazz) throws NewInstanceException, GetTeamNameException, RegisterTimeoutException, IOException {
         try {
             Paddle toReturn = executor.submit(() -> {
-                Paddle instance;
-                try {
-                    instance = clazz.newInstance();
-                } catch (Exception ex) {
-                    throw new NewInstanceException(ex);
-                }
-
-                try {
-                    teamNames.put(clazz, instance.getTeamName());
-                } catch (Exception ex) {
-                    throw new GetTeamNameException(ex);
-                }
-
+                Paddle instance = createPaddleInstance(clazz);
+                registerPaddleName(clazz, instance);
                 return instance;
             }).get(1, TimeUnit.SECONDS);
 
@@ -44,6 +32,24 @@ public class PaddleCache {
             throw new IOException(ex);
         } catch (TimeoutException ex) {
             throw new RegisterTimeoutException();
+        }
+    }
+
+    private static Paddle createPaddleInstance(Class<Paddle> clazz) throws NewInstanceException {
+        Paddle instance;
+        try {
+            instance = clazz.newInstance();
+        } catch (Exception ex) {
+            throw new NewInstanceException(ex);
+        }
+        return instance;
+    }
+
+    private static void registerPaddleName(Class<Paddle> clazz, Paddle instance) throws GetTeamNameException {
+        try {
+            teamNames.put(clazz, instance.getTeamName());
+        } catch (Exception ex) {
+            throw new GetTeamNameException(ex);
         }
     }
 

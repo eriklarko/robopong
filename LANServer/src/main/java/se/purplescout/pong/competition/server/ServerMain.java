@@ -7,11 +7,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import se.purplescout.pong.competition.security.PongPolicy;
+
+import java.security.Policy;
 
 public class ServerMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Policy.setPolicy(new PongPolicy());
+        System.setSecurityManager(new SecurityManager());
+
         Parent root = FXMLLoader.load(getClass().getResource("ServerGui.fxml"));
         primaryStage.setTitle("Pong HighScore");
         primaryStage.setScene(new Scene(root));

@@ -6,11 +6,13 @@ import se.purplescout.pong.competition.HighScoreUtil;
 import se.purplescout.pong.competition.headless.AutoFight;
 import se.purplescout.pong.competition.headless.AutoFightHandler;
 import se.purplescout.pong.competition.paddlecache.PaddleCache;
+import se.purplescout.pong.competition.security.PongPolicy;
 import se.purplescout.pong.game.Paddle;
 import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
+import java.security.Policy;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -28,6 +30,12 @@ public class WebBasedServer extends AutoFightHandler {
     }
 
     public WebBasedServer() {
+        /**
+         * Install the security policy
+         */
+        Policy.setPolicy(new PongPolicy());
+        System.setSecurityManager(new SecurityManager());
+
         webFrontend = new WebFrontend(this, this);
         lastResults = new AtomicReference<>();
     }

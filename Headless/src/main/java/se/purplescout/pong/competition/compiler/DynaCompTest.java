@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class DynaCompTest {
 
     public static final String CLASS_NAME_PATTERN = "class\\s+([\\wåäöÅÄÖ]+)\\s+extends";
+    public static final String PADDLES_CODESOURCE = "thepong";
 
     public static Class<?> compile(String code, PrintWriter errorWriter) throws InvalidSourceStringException, ClassNotFoundException, InstantiationException, IllegalAccessException, JDKNotFoundException {
         // Full name of the class that will be compiled.
@@ -55,8 +56,6 @@ public class DynaCompTest {
             throw new JDKNotFoundException();
         }
 
-        code = clean(code); // Epic name
-
         // Dynamic compiling requires specifying
         // a list of "files" to compile. In our case
         // this is a list containing one "file" which is in our case
@@ -87,18 +86,5 @@ public class DynaCompTest {
         }
 
         return clazz;
-    }
-
-    /**
-     * Removes illegal or dangerous code
-     * @param code
-     * @return
-     */
-    private static String clean(String code) {
-        // TODO: reflection is not removed.. getClass().getDeclared... is still allowed as long as you do everything in one go.
-        return code.replaceAll("System\\.exit", "")
-                   .replaceAll("java\\.lang\\.reflect", "")
-                   .replaceAll("java\\.net", "")
-                   .replaceAll("java\\.nio", "");
     }
 }

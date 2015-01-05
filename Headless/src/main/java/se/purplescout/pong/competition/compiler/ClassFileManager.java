@@ -5,7 +5,11 @@ import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.CodeSource;
 import java.security.SecureClassLoader;
+import java.security.cert.Certificate;
 
 class ClassFileManager extends ForwardingJavaFileManager {
     /**
@@ -37,7 +41,13 @@ class ClassFileManager extends ForwardingJavaFileManager {
             @Override
             protected Class<?> findClass(String name) throws ClassNotFoundException {
                 byte[] b = jclassObject.getBytes();
-                return super.defineClass(name, jclassObject.getBytes(), 0, b.length);
+                URL url = null;
+                try {
+                    url = new URL("file://" + DynaCompTest.PADDLES_CODESOURCE);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+                return super.defineClass(name, jclassObject.getBytes(), 0, b.length, new CodeSource(url, new Certificate[0]));
             }
         };
     }
