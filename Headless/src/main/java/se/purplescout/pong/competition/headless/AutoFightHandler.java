@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-;
-
 public abstract class AutoFightHandler implements NewPaddleListener, FightRoundDoneListener, OnPaddleRemovedListener {
 
     private static final File CODE_LOG_DIRECTORY = new File("paddles");
@@ -120,17 +118,20 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
                 .filter((p) -> p.toFile().getName().equals(PaddleCache.getTeamName(clazz)))
                 .findFirst();
 
-        Path newFileName = file.get().resolveSibling("ignore_" + file.get().toFile().getName());
-        try {
-            if (file.isPresent()) {
+
+        if (file.isPresent()) {
+            Path newFileName = file.get().resolveSibling("ignore_" + file.get().toFile().getName());
+            try {
                 Files.move(file.get(), newFileName);
+            } catch (FileAlreadyExistsException ex) {
+                if (newFileName.toFile().delete()) {
+                    Files.move(file.get(), newFileName);
+                } else {
+                    LOG.warn("Unable to ignore " + clazz);
+                }
             }
-        } catch (FileAlreadyExistsException ex) {
-            if (newFileName.toFile().delete()) {
-                Files.move(file.get(), newFileName);
-            } else {
-                LOG.warn("Unable to ignore " + clazz);
-            }
+        } else {
+            LOG.warn("Unable to ignore " + clazz + ". I can't find it's source file.");
         }
     }
 }

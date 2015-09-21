@@ -11,6 +11,11 @@ import java.util.*;
 public class PongPolicy extends Policy {
 
     @Override
+    public PermissionCollection getPermissions(ProtectionDomain domain) {
+        return getPermissions(domain.getCodeSource());
+    }
+
+    @Override
     public PermissionCollection getPermissions(CodeSource codesource) {
         PermissionCollection permissions = new MyPermissionCollection();
         if (!codesource.getLocation().getHost().equals(DynaCompTest.PADDLES_CODESOURCE)) {
@@ -70,7 +75,8 @@ public class PongPolicy extends Policy {
                     return true;
                 }
             }
-            return false;
+            return true;
+            //return false;
         }
 
         @Override

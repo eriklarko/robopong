@@ -1,8 +1,14 @@
 package se.purplescout.pong.competition.paddlecache;
 
+import se.purplescout.pong.competition.compiler.DynaCompTest;
+import se.purplescout.pong.competition.compiler.InvalidSourceStringException;
+import se.purplescout.pong.competition.compiler.JDKNotFoundException;
+import se.purplescout.pong.competition.security.PongPolicy;
 import se.purplescout.pong.game.Paddle;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.Policy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;

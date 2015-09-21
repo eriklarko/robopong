@@ -1,8 +1,25 @@
 sourceCompatibility = 1.8
 version = '1.0'
 
+test {
+    //systemProperties['java.security.debug'] = 'access,failure'
+    systemProperties['java.security.debug'] = 'failure'
+}
+
+sourceSets {
+    test {
+        java {
+            srcDirs = ["test/java"]
+        }
+    }
+}
+
 dependencies {
     compile project(":AIPong")
     compile 'org.slf4j:slf4j-api:1.7.9'
     compile 'org.slf4j:slf4j-simple:1.7.9'
+    compile 'org.apache.ant:ant:1.8.2'
+    compile 'commons-io:commons-io:2.4'
+
+    testCompile "junit:junit:4.11"
 }
