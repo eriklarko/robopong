@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.util.Objects;
 import org.junit.Ignore;
 
-@Ignore
 public class DynaCompTestTest {
 
     @Test
@@ -37,7 +36,7 @@ public class DynaCompTestTest {
         }
     }
 
-    /*@Test(expected = InstantiationException.class)
+    @Test
     public void compileClassWithoutEmptyOrDefaultConstructor() throws Exception {
         String code = "package foo;" +
                 "public class Bar extends Object {" +
@@ -46,16 +45,16 @@ public class DynaCompTestTest {
         compileAndGetOutput(code);
     }
 
-    @Test(expected = IllegalAccessException.class)
+    @Test
     public void compileClassWithNonPublicEmptyConstructor() throws Exception {
         String code = "package foo;" +
                 "public class Bar extends Object {" +
                 "   Bar() {}" +
                 "}";
         compileAndGetOutput(code);
-    }*/
+    }
 
-    @Test(expected = IllegalAccessException.class)
+    @Test
     public void compileNonPublicClass() throws Exception {
         String code = "package foo;" +
                 "class Bar extends Object {" +
@@ -108,6 +107,7 @@ public class DynaCompTestTest {
         Assert.assertFalse(Objects.equals(firstObj.toString(), secondObj.toString()));
     }
 
+    @Ignore
     @Test(expected = JDKNotFoundException.class)
     public void compileWithoutJdk() throws Exception {
         String oldHome = System.getProperty("java.home");
