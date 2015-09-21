@@ -90,7 +90,7 @@ public abstract class AutoFightHandler implements NewPaddleListener, FightRoundD
         }
 
         try {
-            Writer bw = new BufferedWriter(new FileWriter(new File(CODE_LOG_DIRECTORY, PaddleCache.getTeamName(clazz))));
+            Writer bw = new BufferedWriter(new FileWriter(new File(CODE_LOG_DIRECTORY, PaddleCache.getTeamName(clazz) + ".java")));
             try {
                 bw.append(code);
             } catch(IOException ex1) {

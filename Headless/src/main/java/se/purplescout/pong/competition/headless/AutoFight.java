@@ -15,7 +15,7 @@ public class AutoFight implements Runnable, Callable<AutoFight> {
 
     public static enum STATE {
 
-        BEFORE_FIGHT, FIGHTING, DONE_FIGHTING;
+        BEFORE_FIGHT, FIGHTING, DONE_FIGHTING
     }
 
     public static enum RESULT {
@@ -156,6 +156,10 @@ public class AutoFight implements Runnable, Callable<AutoFight> {
         }
     }
 
+
+    /**
+     * Simply calls run and return itself
+     */
     @Override
     public AutoFight call() throws Exception {
         run();
