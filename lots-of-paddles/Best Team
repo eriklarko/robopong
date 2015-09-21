@@ -1,0 +1,56 @@
+package bestpackage;
+
+import se.purplescout.pong.game.GameRound;
+import se.purplescout.pong.game.Paddle;
+
+import se.purplescout.pong.game.collision.Vector;
+import java.util.Map;
+
+/**
+ * Created by Johan on 14-10-04.
+ */
+public class BestPaddle extends Paddle {
+
+    private GameRound round;
+
+    @Override
+    public void decideWhatToDoThisTick(GameRound gameRound) {
+        round = gameRound;
+        Vector ballPos = gameRound.getBallPosition();
+        Vector ballVelocity = gameRound.getBallVelocity();
+        double newy = ballPos.getY() + ballVelocity.getY();
+        double paddleX = getBoundingBox().getX();
+        if (newy >= round.getBoardSize().getHeight() - 10 || newy <= 10) {
+            double angle = Math.PI - Math.atan2(ballPos.getY(), ballPos.getX());
+            newy = Math.tan(angle) * ballPos.getX() - paddleX;
+        }
+        ploxxMoveMyCenterTo(newy);
+    }
+
+    public void goalY(double x, double y, double vy, double vx) {
+        double newX = x + vx;
+        double goaly = y + vy * newX;
+        if (newX < 0) {
+            goaly *= -1;
+        }
+        if (goaly >= round.getBoardSize().getHeight() - 10 || goaly <= 10) {
+            bouncePos(x, y, vy, vx);
+        } else {
+            ploxxMoveMyCenterTo(goaly);
+        }
+    }
+
+    public void bouncePos(double x, double y, double vx, double vy) {
+        double studsPos = x + vx * (y + vy);
+        double newY = 0;
+        if (vy > 0) {
+            newY = round.getBoardSize().getHeight();
+        }
+        goalY(studsPos, newY, vx, -vy);
+    }
+
+    @Override
+    public String getTeamName() {
+        return "Best Team";
+    }
+}

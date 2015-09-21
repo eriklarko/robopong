@@ -1,0 +1,20 @@
+package yopackage;
+
+import se.purplescout.pong.game.GameRound;
+import se.purplescout.pong.game.Paddle;
+
+/**
+ * Created by Gussoh on 03/10/14.
+ */
+public class SecretTeamPaddle extends Paddle {
+
+    @Override
+    public void decideWhatToDoThisTick(GameRound gameRound) {
+
+    }
+
+    @Override
+    public String getTeamName() {
+        return "Gussohs lagggggg";
+    }
+}

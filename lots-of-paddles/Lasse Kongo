@@ -1,0 +1,22 @@
+package pong;
+
+import se.purplescout.pong.game.GameRound;
+
+public class LasseKongo extends se.purplescout.pong.game.Paddle {
+
+	public LasseKongo() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void decideWhatToDoThisTick(GameRound arg0) {
+		this.ploxxMoveMyCenterTo(arg0.getOtherPaddlePosition().getY());
+	}
+
+	@Override
+	public String getTeamName() {
+		// TODO Auto-generated method stub
+		return "Lasse Kongo";
+	}
+
+}

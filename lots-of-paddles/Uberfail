@@ -1,0 +1,19 @@
+package uber;
+
+import se.purplescout.pong.game.collision.Vector;
+import se.purplescout.pong.game.GameRound;
+import se.purplescout.pong.game.Paddle;
+
+public class UberPaddle extends Paddle {
+
+    @Override
+    public void decideWhatToDoThisTick(GameRound context) {
+        Vector x = context.getBallPosition();
+        ploxxMoveMyCenterTo(x.getY());
+    }
+
+    @Override
+    public String getTeamName() {
+        return "Uberfail";
+    }
+}

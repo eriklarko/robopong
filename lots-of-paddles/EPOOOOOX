@@ -1,0 +1,18 @@
+package examplepaddles;
+
+import se.purplescout.pong.game.Paddle;
+import se.purplescout.pong.game.GameRound;
+
+public class AlwaysAlignedPaddle extends Paddle {
+
+    @Override
+    public void decideWhatToDoThisTick(GameRound gr) {
+        this.ploxxMoveMyCenterTo(gr.getBallPosition().getY());
+        // HEJJE
+    }
+
+    @Override
+    public String getTeamName() {
+        return "EPOOOOOX";
+    }
+}

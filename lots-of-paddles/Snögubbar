@@ -1,0 +1,100 @@
+package pong;
+
+import se.purplescout.pong.game.GameRound;
+
+public class Gurka extends se.purplescout.pong.game.Paddle {
+
+	private Double lastX = 0.0;
+	private Double velx = 0.0;
+	private Double vely = 0.0;
+	private Double vel = 0.0;
+
+	private Double beforeX = 0.0;
+	private Double speed = 0.0;
+	private Double startingSpeed = 4.0;
+	private Double lastY = 0.0;
+	private int hit = 0;
+	private Double thisPositionY = 0.0;
+	private Double lastYPosition = 0.0;
+	private int var = 1;
+
+	private double nextX = 0.0;
+	private double nextY = 0.0;
+	private double otherP = 0.0;	
+	public Gurka() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void decideWhatToDoThisTick(GameRound arg0) {
+
+		if(arg0.getBallVelocity().getX() - lastX != 0.0) {
+			velx = Math.abs(arg0.getBallVelocity().getX() - lastX);
+			vely = Math.abs(arg0.getBallVelocity().getY() - lastY);
+			thisPositionY = (arg0.getBallPosition().getY() - lastYPosition);
+			vel = Math.sqrt((Math.pow(velx,2) + Math.pow(vely,2)));
+
+			if(vel <= 5)
+				hit = 0;
+
+			hit++;
+		};
+
+		if (thisPositionY < 0){
+			var = -1;
+		} else {
+			var = 1;
+		}
+
+		//if(vel > 10)
+		//this.ploxxMoveMyCenterTo(arg0.getBallPosition().getY() + arg0.getBallVelocity().getY() + vel);
+		//else
+		//this.ploxxMoveMyCenterTo(arg0.getBallPosition().getY() + arg0.getBallVelocity().getY());
+		//System.out.println(arg0.getBallVelocity().getX() - lastX);
+
+		//this.ploxxMoveMyCenterTo(arg0.getBallPosition().getY() + (var*arg0.getBallVelocity().getY()*(1.1*hit)));
+		//this.ploxxMoveMyCenterTo((arg0.getBallPosition().getY() + (900/velx) * vely + arg0.getBallVelocity().getY()) % 900.0);	
+
+
+		nextX = (arg0.getBallPosition().getX() + velx) % 900.0;
+		nextY = (arg0.getBallPosition().getY() + vely) % 400;
+
+		otherP = arg0.getOtherPaddlePosition().getX();
+
+
+		if(otherP < 450){
+			if (nextX > 400){
+				if ((nextY > 250 && nextX < 800) || (nextY < 150 && nextX < 800)) {
+				} else {
+					this.ploxxMoveMyCenterTo(nextY);
+				}
+			} else {
+				this.ploxxMoveMyCenterTo(200d);
+			}
+		} else {
+			if (nextX < 500){
+				if ((nextY > 250 && nextX < 100) || (nextY < 150 && nextX < 100)) {
+				} else {
+					this.ploxxMoveMyCenterTo(nextY);
+				}
+			} else {
+				this.ploxxMoveMyCenterTo(200d);
+			}
+		}
+
+
+		lastX = arg0.getBallVelocity().getX();
+		lastY = arg0.getBallVelocity().getY(); 
+		lastYPosition = arg0.getBallPosition().getY();
+		//System.out.println(arg0.getBoardSize());
+		//System.out.println(arg0.getBallPosition().getX());
+		//System.out.println(arg0.getBallPosition().getY());
+	}
+
+	@Override
+	public String getTeamName() {
+		// TODO Auto-generated method stub
+		return "Snögubbar";
+	}
+
+}

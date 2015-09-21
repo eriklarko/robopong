@@ -1,0 +1,28 @@
+package example;
+
+import se.purplescout.pong.game.collision.Rectangle;
+import se.purplescout.pong.game.collision.Vector;
+import se.purplescout.pong.game.GameRound;
+import se.purplescout.pong.game.Paddle;
+
+public class Roflcopter extends Paddle {
+
+    @Override
+    public void decideWhatToDoThisTick(GameRound context) {
+        //ploxxMoveMyCenterTo(0);
+
+        Vector position = context.getBallPosition();
+        Vector velocity = context.getBallVelocity();
+
+        Rectangle boundingBox = getBoundingBox();
+        double center = boundingBox.getCenterX();
+
+        ploxxMoveMyCenterTo(position.getY());
+    }
+
+    @Override
+    public String getTeamName() {
+        return "Roflooooopter";
+    }
+}
+
