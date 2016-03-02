@@ -5,12 +5,25 @@ version = '1.0'
 
 mainClassName = 'se.purplescout.pong.competition.web.WebBasedServer'
 
+sourceSets {
+    main {
+        resources.srcDirs = ["src/main/java"]
+    }
+}
 jar {
+    from sourceSets.main.allJava
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
     manifest {
         attributes 'Main-Class': 'se.purplescout.pong.competition.web.WebBasedServer'
     }
 }
-
 
 dependencies {
     compile project(":Headless")
