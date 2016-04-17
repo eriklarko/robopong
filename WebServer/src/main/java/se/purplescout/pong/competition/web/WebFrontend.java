@@ -33,8 +33,9 @@ class WebFrontend {
 
     public void start() {
         port(1337);
-        get("/", (req, res) -> "GET /highscore\nPOST /upload");
+        get("/", (req, res) -> "GET /highscore\nGET /upload\nPOST /upload");
         get("/highscore", "application/json", server::sendHighScore, new JsonTransformer());
+        get("/upload", "application/html", this::exampleUploadForm);
         post("/upload", this::handleIncomingFile);
     }
 
@@ -43,7 +44,19 @@ class WebFrontend {
         String code = convertStreamToString(filePart.getInputStream());
 
         try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(response.raw().getOutputStream()))) {
-            Class<Paddle> p = (Class<Paddle>) DynaCompTest.compile(code, printWriter);
+            Class<Paddle> p = null;
+            try {
+                p = (Class<Paddle>) DynaCompTest.compile(code, printWriter);
+            } catch (Exception e) {
+                System.out.println("Could not compile the uploaded file. The response headers contains this information too.");
+                e.printStackTrace();
+
+                response.status(400);
+                response.header("reason", "Could not compile the uploaded file");
+                response.header("exception", e.toString());
+                return "Could not compile the uploaded file.";
+            }
+
             if (newPaddleListener != null) {
                 newPaddleListener.newPaddle(p, code);
             }
@@ -61,6 +74,17 @@ class WebFrontend {
     private String convertStreamToString(java.io.InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
+    }
+
+    private String exampleUploadForm(Request request, Response response) {
+        return "<html>" +
+            "<body>" +
+                "<form method=\"post\" action=\"/upload\" enctype=\"multipart/form-data\">" +
+                    "Select file to upload: <input type=\"file\" name=\"file\" /><br />" +
+                    "<br /><input type=\"submit\" value=\"Upload\" />" +
+                "</form>" +
+            "</body>" +
+        "</html>";
     }
 
     public static class JsonTransformer implements ResponseTransformer {
